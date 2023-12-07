@@ -3,6 +3,7 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
+import mongoose from "mongoose";
 
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
@@ -38,6 +39,14 @@ app.post(
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
+
+// Database connection
+mongoose
+  .connect(`${process.env.DB_URL}+${process.env.DB_NAME}`)
+  .then(() => console.log('db connected'))
+  .catch((err) => console.log(err,'error not connected'))
+// ------------------
+
 
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
