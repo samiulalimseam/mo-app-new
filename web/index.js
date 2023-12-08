@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
+import rootRouter from "./server/routes/router.js";
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
@@ -42,12 +43,12 @@ app.use(express.json());
 
 // Database connection
 mongoose
-  .connect(`${process.env.DB_URL}+${process.env.DB_NAME}`)
+  .connect(`mongodb+srv://prisma:1234@cluster0.flmxcne.mongodb.net/mo-app-dev`)
   .then(() => console.log('db connected'))
   .catch((err) => console.log(err,'error not connected'))
 // ------------------
 
-
+rootRouter(app)
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
